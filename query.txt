@@ -56,3 +56,4 @@ Out[37]: <QuerySet [<Account: Account - us_3>]>
 10) Получение аккаунтов (Account), что имеют в логине 'ac':
 In [38]: models.Account.objects.filter(login__contains = 'ac')
 Out[38]: <QuerySet [<Account: Account - us_2>, <Account: Account - us_3>]>
+
