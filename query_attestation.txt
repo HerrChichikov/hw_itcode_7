@@ -1,0 +1,225 @@
+-Methods that do not return QuerySets-
+
+-Сздание объект модели Home разными методами:
+home1 = models.Home(street = 'test', house = 'test', city = 'test')
+home1.save()
+home1
+Out[6]: <Home: Home: test, test, test>
+
+models.Home.objects.create(street = 'street2', house = 'house2')
+Out[3]: <Home: Home: , street2, house2>
+
+models.Home.objects.get_or_create(street = 'street3', house = 'house3', city = 'city3')
+Out[6]: (<Home: Home: city3, street3, house3>, True)
+
+models.Home.objects.update_or_create(pk=30, street='street3', house='house3_new', city='city3_new')
+Out[11]: (<Home: Home: city3_new, street3, house3_new>, True)
+
+models.Home.objects.bulk_create([models.Home(street = 'bulk1_street', house='bulk1_house', city='bulk1_city'), models.Home(street = 'bulk2_street', house='bulk2_house', city='bulk2_city'), models.Home(street = 'bulk3_street', house='bulk3_house', city='bulk3_city'), ])
+Out[17]: 
+[<Home: Home: bulk1_city, bulk1_street, bulk1_house>,
+ <Home: Home: bulk2_city, bulk2_street, bulk2_house>,
+ <Home: Home: bulk3_city, bulk3_street, bulk3_house>]
+
+
+-Cохранение в объекте модели Home изменений:
+
+home1.house = 'test2'
+home1.save()
+home1
+
+models.Home.objects.filter(pk=36).update(street = 'up_street_36')
+Out[24]: 1
+
+values_for_update={'street':'street3_up', 'house':'house3_up', 'city':'city3_up'}
+models.Home.objects.update_or_create(id=22, defaults = values_for_update)
+Out[15]: (<Home: Home: city3_up, street3_up, house3_up>, False)
+
+obj_for_update=[models.Home.objects.get(pk=34), models.Home.objects.get(pk=35), models.Home.objects.get(pk=36),]
+obj_for_update[0].street = 'bulk1_up_street'
+obj_for_update[1].street = 'bulk2_up_street'
+obj_for_update[2].street = 'bulk3_up_street'
+models.Home.objects.bulk_update(obj_for_update, ['street'])
+Out[23]: 3
+
+-Получение объекта модели Home:
+
+models.Home.objects.get(pk=36)
+Out[26]: <Home: Home: bulk3_city, up_street_36, bulk3_house>
+
+models.Home.objects.filter(pk=36).first()
+Out[27]: <Home: Home: bulk3_city, up_street_36, bulk3_house>
+
+-in_bulk():
+models.Home.objects.in_bulk([34, 35, 36])
+Out[34]: 
+{34: <Home: Home: bulk1_city, bulk1_up_street, bulk1_house>,
+ 35: <Home: Home: bulk2_city, bulk2_up_street, bulk2_house>,
+ 36: <Home: Home: bulk3_city, up_street_36, bulk3_house>}
+
+models.Home.objects.in_bulk()
+Out[35]: 
+{1: <Home: Home: Муравленко, Ленина, 28>,
+ 2: <Home: Home: Муравленко, Победы, 28>,
+ 3: <Home: Home: Муравленко, Строителей, 28>,
+ 4: <Home: Home: Муравленко, Народов, 28>,
+ 5: <Home: Home: Муравленко, Катеньки, 28>,
+ 7: <Home: Home: second_test, second_test, second_test>,
+ 8: <Home: Home: test, test, test2>,
+ 11: <Home: Home: , street2, house2>,
+ 20: <Home: Home: city3, street3, house3>,
+ 21: <Home: Home: , street3_new, house3>,
+ 22: <Home: Home: city3_up, street3_up, house3_up>,
+ 30: <Home: Home: city3_up, street3_up, house3_up>,
+ 31: <Home: Home: bulk1_city, , >,
+ 32: <Home: Home: bulk2_city, , >,
+ 33: <Home: Home: bulk3_city, , >,
+ 34: <Home: Home: bulk1_city, bulk1_up_street, bulk1_house>,
+ 35: <Home: Home: bulk2_city, bulk2_up_street, bulk2_house>,
+ 36: <Home: Home: bulk3_city, up_street_36, bulk3_house>}
+
+models.Home.objects.in_bulk(['36'], field_name = 'id')
+Out[39]: {36: <Home: Home: bulk3_city, up_street_36, bulk3_house>}
+
+-Получение количества объектов модели Home:
+
+models.Home.objects.count()
+Out[28]: 18
+
+models.Home.objects.filter(street__icontains='street3').count()
+Out[30]: 4
+
+-earliest() и latest():
+
+models.Home.objects.earliest('date')
+Out[8]: <Home: Home: bulk3_city, up_street_36, bulk3_house>
+
+models.Home.objects.latest('date')
+Out[9]: <Home: Home: bulk2_city, bulk2_up_street, bulk2_house>
+
+-first() и last():
+
+models.Home.objects.filter(street__icontains='street3').first()
+Out[10]: <Home: Home: city3, street3, house3>
+
+models.Home.objects.filter(street__icontains='street3').last()
+Out[11]: <Home: Home: city3_up, street3_up, house3_up>
+
+-aggregate()
+
+models.Account.objects.aggregate(Count('user'))
+Out[14]: {'user__count': 5}
+
+models.Account.objects.aggregate(count_of_user = Count('user'))
+Out[15]: {'count_of_user': 5}
+
+
+-exists():
+
+models.Home.objects.exists()
+Out[16]: True
+
+-contains():
+
+home1 = models.Home.objects.get(street='street3')
+home2 = models.Home.objects.get(street='street2')
+homes = models.Home.objects.filter(street__icontains='street3')
+homes.contains(home1)
+Out[31]: True
+homes.contains(home2)
+Out[32]: False
+
+-delete():
+
+home_for_delete = models.Home.objects.filter(street__icontains='street2')
+home_for_delete.delete()
+Out[34]: (1, {'core.Home': 1})
+
+Создание объектов Account, Course, User, School, Home. Сохранение полей ForeignKey, ManyToManyField, OneToOneField 
+
+
+-Methods that return new QuerySets-
+
+-filter():
+models.Home.objects.filter(street__in = ['street2', 'street3',])
+Out[36]: <QuerySet [<Home: Home: city3, street3, house3>]>
+
+models.Home.objects.filter(street__in = ['street3_up', 'street3',]).filter(city='city3_up')
+Out[38]: <QuerySet [<Home: Home: city3_up, street3_up, house3_up>]>
+
+models.Home.objects.filter(street__in = ['street3_up', 'street3',], city__icontains = 'city')
+Out[39]: <QuerySet [<Home: Home: city3, street3, house3>, <Home: Home: city3_up, street3_up, house3_up>]>
+
+-exclude():
+
+models.Home.objects.exclude(pk__lt = 9).exclude(city__icontains = 'city')
+Out[43]: <QuerySet [<Home: Home: , street3_new, house3>]>
+
+models.Home.objects.exclude(pk__lt = 9)
+Out[44]: <QuerySet [<Home: Home: city3, street3, house3>, <Home: Home: , street3_new, house3>, <Home: Home: city3_up, street3_up, house3_up>, <Home: Home: bulk1_city, , >, <Home: Home: bulk2_city, , >, <Home: Home: bulk3_city, , >, <Home: Home: bulk1_city, bulk1_up_street, bulk1_house>, <Home: Home: bulk2_city, bulk2_up_street, bulk2_house>, <Home: Home: bulk3_city, up_street_36, bulk3_house>]>
+
+models.Home.objects.exclude(pk__lt = 9, city__icontains = 'city')
+Out[45]: <QuerySet [<Home: Home: Муравленко, Ленина, 28>, <Home: Home: Муравленко, Победы, 28>, <Home: Home: Муравленко, Строителей, 28>, <Home: Home: Муравленко, Народов, 28>, <Home: Home: Муравленко, Катеньки, 28>, <Home: Home: second_test, second_test, second_test>, <Home: Home: test, test, test2>, <Home: Home: city3, street3, house3>, <Home: Home: , street3_new, house3>, <Home: Home: city3_up, street3_up, house3_up>, <Home: Home: bulk1_city, , >, <Home: Home: bulk2_city, , >, <Home: Home: bulk3_city, , >, <Home: Home: bulk1_city, bulk1_up_street, bulk1_house>, <Home: Home: bulk2_city, bulk2_up_street, bulk2_house>, <Home: Home: bulk3_city, up_street_36, bulk3_house>]>
+
+
+-annotate():
+
+users = models.Account.objects.annotate(Count("course"))
+users[0].login
+Out[72]: 'Саша'
+users[0].course__count
+Out[73]: 3
+
+users = models.Account.objects.annotate(count_of_course = Count("course"))
+users[0].count_of_course
+Out[75]: 3
+
+
+-alias():
+
+models.Account.objects.alias(count_of_course = Count("course")).filter(count_of_course__gt = 3)
+Out[77]: <QuerySet [<Account: Account - Ваня>]>
+
+-order_by():
+
+models.Home.objects.all().order_by('date')
+Out[78]: <QuerySet [<Home: Home: bulk3_city, up_street_36, bulk3_house>, <Home: Home: bulk1_city, bulk1_up_street, bulk1_house>, <Home: Home: bulk3_city, , >, <Home: Home: bulk2_city, , >, <Home: Home: bulk1_city, , >, <Home: Home: city3_up, street3_up, house3_up>, <Home: Home: , street3_new, house3>, <Home: Home: city3, street3, house3>, <Home: Home: test, test, test2>, <Home: Home: second_test, second_test, second_test>, <Home: Home: Муравленко, Катеньки, 28>, <Home: Home: Муравленко, Строителей, 28>, <Home: Home: Муравленко, Народов, 28>, <Home: Home: Муравленко, Победы, 28>, <Home: Home: Муравленко, Ленина, 28>, <Home: Home: bulk2_city, bulk2_up_street, bulk2_house>]>
+
+models.Home.objects.all().order_by('-date')
+Out[79]: <QuerySet [<Home: Home: bulk2_city, bulk2_up_street, bulk2_house>, <Home: Home: Муравленко, Ленина, 28>, <Home: Home: Муравленко, Победы, 28>, <Home: Home: Муравленко, Строителей, 28>, <Home: Home: Муравленко, Народов, 28>, <Home: Home: Муравленко, Катеньки, 28>, <Home: Home: second_test, second_test, second_test>, <Home: Home: test, test, test2>, <Home: Home: city3, street3, house3>, <Home: Home: , street3_new, house3>, <Home: Home: city3_up, street3_up, house3_up>, <Home: Home: bulk1_city, , >, <Home: Home: bulk2_city, , >, <Home: Home: bulk3_city, , >, <Home: Home: bulk1_city, bulk1_up_street, bulk1_house>, <Home: Home: bulk3_city, up_street_36, bulk3_house>]>
+
+models.Home.objects.all().order_by('?')
+Out[80]: <QuerySet [<Home: Home: bulk1_city, bulk1_up_street, bulk1_house>, <Home: Home: second_test, second_test, second_test>, <Home: Home: bulk3_city, , >, <Home: Home: test, test, test2>, <Home: Home: Муравленко, Победы, 28>, <Home: Home: Муравленко, Строителей, 28>, <Home: Home: bulk2_city, , >, <Home: Home: bulk1_city, , >, <Home: Home: Муравленко, Народов, 28>, <Home: Home: bulk2_city, bulk2_up_street, bulk2_house>, <Home: Home: city3_up, street3_up, house3_up>, <Home: Home: city3, street3, house3>, <Home: Home: Муравленко, Катеньки, 28>, <Home: Home: Муравленко, Ленина, 28>, <Home: Home: bulk3_city, up_street_36, bulk3_house>, <Home: Home: , street3_new, house3>]>
+
+
+models.Account.objects.order_by('user__name')
+Out[81]: <QuerySet [<Account: Account - Ваня>, <Account: Account - Катенька>, <Account: Account - Кирюша>, <Account: Account - Петя>, <Account: Account - Саша>]>
+models.Account.objects.order_by('-user__name')
+
+Out[82]: <QuerySet [<Account: Account - Саша>, <Account: Account - Петя>, <Account: Account - Кирюша>, <Account: Account - Катенька>, <Account: Account - Ваня>]>
+
+
+-reverse():
+
+models.Home.objects.all().order_by('date')[:5]
+Out[85]: <QuerySet [<Home: Home: bulk3_city, up_street_36, bulk3_house>, <Home: Home: bulk1_city, bulk1_up_street, bulk1_house>, <Home: Home: bulk3_city, , >, <Home: Home: bulk2_city, , >, <Home: Home: bulk1_city, , >]>
+
+-values() и values_list:
+
+models.Account.objects.alias(count_course = Count('course')).filter(count_course__gte = 3).values()
+Out[102]: <QuerySet [{'id': 1, 'date': None, 'user_id': 1, 'login': 'Саша', 'password': 'СашаПароль', 'school_id': 1, 'home_id': 1}, {'id': 2, 'date': None, 'user_id': 2, 'login': 'Петя', 'password': 'ПетяПароль', 'school_id': 2, 'home_id': 2}, {'id': 3, 'date': None, 'user_id': 3, 'login': 'Ваня', 'password': 'ВаняПароль', 'school_id': 3, 'home_id': 3}, {'id': 4, 'date': None, 'user_id': 4, 'login': 'Кирюша', 'password': 'КирюшаПароль', 'school_id': 4, 'home_id': 4}]>
+models.Account.objects.alias(count_course = Count('course')).filter(count_course__gt = 3).values()
+Out[103]: <QuerySet [{'id': 3, 'date': None, 'user_id': 3, 'login': 'Ваня', 'password': 'ВаняПароль', 'school_id': 3, 'home_id': 3}]>
+
+models.Account.objects.filter(pk__gte = 3).values()
+Out[88]: <QuerySet [{'id': 3, 'date': None, 'user_id': 3, 'login': 'Ваня', 'password': 'ВаняПароль', 'school_id': 3, 'home_id': 3}, {'id': 4, 'date': None, 'user_id': 4, 'login': 'Кирюша', 'password': 'КирюшаПароль', 'school_id': 4, 'home_id': 4}, {'id': 5, 'date': None, 'user_id': 5, 'login': 'Катенька', 'password': 'КатенькаПароль', 'school_id': 1, 'home_id': 5}]>
+
+models.Account.objects.filter(pk__gte = 3).values_list()
+Out[89]: <QuerySet [(3, None, 3, 'Ваня', 'ВаняПароль', 3, 3), (4, None, 4, 'Кирюша', 'КирюшаПароль', 4, 4), (5, None, 5, 'Катенька', 'КатенькаПароль', 1, 5)]>
+
+-union():
+
+first = models.User.objects.all()
+second = models.School.objects.all()
+first.union(second).order_by('name')
+Out[119]: <QuerySet [<User: Ваня>, <User: Вторая>, <User: Катенька>, <User: Кирюша>, <User: Первая>, <User: Петя>, <User: Саша>, <User: Третья>, <User: Четвёртая>]>
