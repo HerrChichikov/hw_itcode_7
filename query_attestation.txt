@@ -223,3 +223,75 @@ first = models.User.objects.all()
 second = models.School.objects.all()
 first.union(second).order_by('name')
 Out[119]: <QuerySet [<User: Ваня>, <User: Вторая>, <User: Катенька>, <User: Кирюша>, <User: Первая>, <User: Петя>, <User: Саша>, <User: Третья>, <User: Четвёртая>]>
+
+
+-Field lookups-
+
+-exact и iexact:
+
+models.Home.objects.get(pk__exact = 36)
+Out[4]: <Home: Home: bulk3_city, up_street_36, bulk3_house>
+
+models.Home.objects.get(street__iexact = 'STREET3')
+Out[9]: <Home: Home: city3, street3, house3>
+
+-contains и icontains:
+
+models.Home.objects.filter(street__contains = "street")
+Out[11]: <QuerySet [<Home: Home: city3, street3, house3>, <Home: Home: , street3_new, house3>, <Home: Home: city3_up, street3_up, house3_up>, <Home: Home: bulk1_city, bulk1_up_street, bulk1_house>, <Home: Home: bulk2_city, bulk2_up_street, bulk2_house>, <Home: Home: bulk3_city, up_street_36, bulk3_house>]>
+
+models.Home.objects.filter(street__icontains = "STREET")
+Out[12]: <QuerySet [<Home: Home: city3, street3, house3>, <Home: Home: , street3_new, house3>, <Home: Home: city3_up, street3_up, house3_up>, <Home: Home: bulk1_city, bulk1_up_street, bulk1_house>, <Home: Home: bulk2_city, bulk2_up_street, bulk2_house>, <Home: Home: bulk3_city, up_street_36, bulk3_house>]>
+
+-in:
+
+models.Home.objects.filter(pk__in = [1, 2, 3, 4])
+Out[13]: <QuerySet [<Home: Home: Муравленко, Ленина, 28>, <Home: Home: Муравленко, Победы, 28>, <Home: Home: Муравленко, Строителей, 28>, <Home: Home: Муравленко, Народов, 28>]>
+
+models.Home.objects.filter(street__in = ['test', 'street3'])
+Out[14]: <QuerySet [<Home: Home: test, test, test2>, <Home: Home: city3, street3, house3>]>
+
+-gt и gte:
+
+models.Home.objects.filter(pk__gt = 9)
+Out[15]: <QuerySet [<Home: Home: city3, street3, house3>, <Home: Home: , street3_new, house3>, <Home: Home: city3_up, street3_up, house3_up>, <Home: Home: bulk1_city, , >, <Home: Home: bulk2_city, , >, <Home: Home: bulk3_city, , >, <Home: Home: bulk1_city, bulk1_up_street, bulk1_house>, <Home: Home: bulk2_city, bulk2_up_street, bulk2_house>, <Home: Home: bulk3_city, up_street_36, bulk3_house>]>
+
+models.Home.objects.filter(pk__gte = 9)
+Out[16]: <QuerySet [<Home: Home: city3, street3, house3>, <Home: Home: , street3_new, house3>, <Home: Home: city3_up, street3_up, house3_up>, <Home: Home: bulk1_city, , >, <Home: Home: bulk2_city, , >, <Home: Home: bulk3_city, , >, <Home: Home: bulk1_city, bulk1_up_street, bulk1_house>, <Home: Home: bulk2_city, bulk2_up_street, bulk2_house>, <Home: Home: bulk3_city, up_street_36, bulk3_house>]>
+
+-lt и lte:
+
+models.Home.objects.filter(pk__lt = 9)
+Out[17]: <QuerySet [<Home: Home: Муравленко, Ленина, 28>, <Home: Home: Муравленко, Победы, 28>, <Home: Home: Муравленко, Строителей, 28>, <Home: Home: Муравленко, Народов, 28>, <Home: Home: Муравленко, Катеньки, 28>, <Home: Home: second_test, second_test, second_test>, <Home: Home: test, test, test2>]>
+
+models.Home.objects.filter(pk__lte = 9)
+Out[18]: <QuerySet [<Home: Home: Муравленко, Ленина, 28>, <Home: Home: Муравленко, Победы, 28>, <Home: Home: Муравленко, Строителей, 28>, <Home: Home: Муравленко, Народов, 28>, <Home: Home: Муравленко, Катеньки, 28>, <Home: Home: second_test, second_test, second_test>, <Home: Home: test, test, test2>]>
+
+-startswith и istartswith:
+
+models.Home.objects.filter(street__startswith = 'bulk')
+Out[20]: <QuerySet [<Home: Home: bulk1_city, bulk1_up_street, bulk1_house>, <Home: Home: bulk2_city, bulk2_up_street, bulk2_house>]>
+
+models.Home.objects.filter(street__istartswith = 'bulk')
+Out[3]: <QuerySet [<Home: Home: bulk3_city, Bulk_up_street, >, <Home: Home: bulk1_city, bulk1_up_street, bulk1_house>, <Home: Home: bulk2_city, bulk2_up_street, bulk2_house>]>
+
+-endswith и iendswith:
+
+models.Home.objects.filter(street__endswith = 'street')
+Out[5]: <QuerySet [<Home: Home: bulk3_city, Bulk_up_street, >, <Home: Home: bulk1_city, bulk1_up_street, bulk1_house>, <Home: Home: bulk2_city, bulk2_up_street, bulk2_house>]>
+
+models.Home.objects.filter(street__iendswith = 'street')
+Out[4]: <QuerySet [<Home: Home: bulk2_city, Bulk_up_StReET, house>, <Home: Home: bulk3_city, Bulk_up_street, house>, <Home: Home: bulk1_city, bulk1_up_street, bulk1_house>, <Home: Home: bulk2_city, bulk2_up_street, bulk2_house>]>
+
+-range:
+
+models.Home.objects.filter(street__range = ('street', 'test'))
+Out[5]: <QuerySet [<Home: Home: test, test, test2>, <Home: Home: city3, street3, house3>, <Home: Home: , street3_new, house3>, <Home: Home: city3_up, street3_up, house3_up>]>
+
+models.Home.objects.filter(pk__range = (1, 5))
+Out[6]: <QuerySet [<Home: Home: Муравленко, Ленина, 28>, <Home: Home: Муравленко, Победы, 28>, <Home: Home: Муравленко, Строителей, 28>, <Home: Home: Муравленко, Народов, 28>, <Home: Home: Муравленко, Катеньки, 28>]>
+
+-isnull:
+
+models.Home.objects.filter(city__isnull = True)
+Out[3]: <QuerySet [<Home: Home: None, street5_new, street5_new>]>
