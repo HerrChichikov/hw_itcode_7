@@ -135,7 +135,7 @@ home_for_delete = models.Home.objects.filter(street__icontains='street2')
 home_for_delete.delete()
 Out[34]: (1, {'core.Home': 1})
 
-Создание объектов Account, Course, User, School, Home. Сохранение полей ForeignKey, ManyToManyField, OneToOneField 
+Создание объектов Account, Course, User, School, Home. Сохранение полей ForeignKey, ManyToManyField, OneToOneField
 
 
 -Methods that return new QuerySets-

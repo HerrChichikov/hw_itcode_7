@@ -6,13 +6,14 @@ from django.db import models
 class Home(models.Model):
     street = models.CharField(max_length=255, blank=True)
     house = models.CharField(max_length=255, blank=True)
-    city = models.CharField(max_length=255, null=True)
+    city = models.CharField(max_length=255, blank=True)
+    num = models.CharField(max_length=255, blank=True)
 
     def __str__(self):
         return f"Home: {self.get_full_address()}"
 
     def get_full_address(self):
-        return f"{self.city}, {self.street}, {self.house}"
+        return f"{self.city}, {self.street}, {self.house}, {self.num}"
 
     class Meta:
         verbose_name = "Адрес проживания"
@@ -21,9 +22,10 @@ class Home(models.Model):
 
 class School(models.Model):
     name = models.CharField(max_length=255)
+    num = models.CharField(max_length=255, blank=True)
 
     def __str__(self):
-        return f"School: {self.name}"
+        return f"School: {self.name} {self.num}"
 
     class Meta:
         verbose_name = "Школа"
