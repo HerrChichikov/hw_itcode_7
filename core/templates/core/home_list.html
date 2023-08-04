@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+</head>
+<body>
+
+
+<table class="table">
+    <thead>
+    <tr>
+        <th scope="col">PK</th>
+        <th scope="col">Улица</th>
+        <th scope="col">Дом</th>
+        <th scope="col">Город</th>
+        <th scope="col">Номер</th>
+        <th scope="col">Подробнее</th>
+        <th scope="col">Обновление</th>
+        <th scope="col">Удаление</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for home in homes %}
+        <tr>
+            <td>{{ home.pk }}</td>
+            <td>{{ home.street }}</td>
+            <td>{{ home.house }}</td>
+            <td>{{ home.city }}</td>
+            <td>{{ home.num }}</td>
+            <td><a href="{% url 'core:home_detail' home.pk %}" role="button">Подробнее</a></td>
+            <td><a href="{% url 'core:home_update' home.pk %}" role="button">Обновление</a></td>
+            <td><a href="{% url 'core:home_delete' home.pk %}" role="button">Удаление</a></td>
+
+        </tr>
+        </tbody>
+    {% empty %}
+        <h3>Список пуст</h3>
+    {% endfor %}
+</table>
+
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+</head>
+<body>
+<h1>Детальный Home</h1>
+Улица:
+<br>
+{{ home.street }}
+<br>
+Дом:
+<br>
+{{ home.house }}
+<br>
+Город:
+<br>
+{{ home.city }}
+<br>
+Номер:
+<br>
+{{ home.num }}
+<br>
+<br>
+Фото:
+<br>
+<img src="{{ home.photo.url }}" width="300">
+<br>
+<br>
+Школы (всякие):
+<br>
+{{ school }}
+<br>
+<br>
+<a class="btn btn-secondary" href="{% url 'core:home_list' %}" role="button">Вернуться к списку</a>
+</body>
+</html>

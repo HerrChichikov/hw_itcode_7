@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Обновление</title>
+</head>
+<body>
+<form action="" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button class="btn btn-danger" type="submit">Обновить</button>
+    <a class="btn btn-secondary" href="{% url 'core:home_list' %}" role="button">Вернуться к списку</a>
+</form>
+</body>
+</html>

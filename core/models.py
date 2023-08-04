@@ -1,6 +1,7 @@
 from datetime import date
 
 from django.db import models
+from django.urls import reverse
 
 
 class Home(models.Model):
@@ -8,12 +9,16 @@ class Home(models.Model):
     house = models.CharField(max_length=255, blank=True)
     city = models.CharField(max_length=255, blank=True)
     num = models.CharField(max_length=255, blank=True)
+    photo = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True, null=True)
 
     def __str__(self):
         return f"Home: {self.get_full_address()}"
 
     def get_full_address(self):
         return f"{self.city}, {self.street}, {self.house}, {self.num}"
+
+    def get_absolute_url(self):
+        return reverse('core:home_detail', kwargs={'pk': self.pk})
 
     class Meta:
         verbose_name = "Адрес проживания"

@@ -1,14 +1,31 @@
-from django.views.generic import DetailView
+from django.urls import reverse_lazy
+from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
 from django.http import HttpResponse, QueryDict
 
 from core import models
 
 
-class Test(DetailView):
-    model = models.Account
-    template_name = 'core/tests.html'
-    context_object_name = 'account'
-    title = 'Запросы с аккаунтом'
+class DetailHome(DetailView):
+    model = models.Home
+    template_name = 'core/home_detail.html'
+    context_object_name = 'home'
+    title = 'Детальный Home'
+
+    def get_title(self):
+        return self.title
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["title"] = self.get_title()
+        context["school"] = models.School.objects.all()
+        return context
+
+
+class ListHome(ListView):
+    model = models.Home
+    template_name = 'core/home_list.html'
+    context_object_name = 'homes'
+    title = 'Cписок Home'
 
     def get_title(self):
         return self.title
@@ -17,6 +34,28 @@ class Test(DetailView):
         context = super().get_context_data(**kwargs)
         context["title"] = self.get_title()
         return context
+
+
+class HomeCreate(CreateView):
+    template_name = 'core/home_create.html'
+    model = models.Home
+    fields = ('house', 'city', 'num')
+
+    def form_valid(self, form):
+        form.instance.street = 'form_valid'
+        return super().form_valid(form)
+
+
+class HomeUpdate(UpdateView):
+    template_name = 'core/home_update.html'
+    model = models.Home
+    fields = '__all__'
+
+
+class HomeDelete(DeleteView):
+    template_name = 'core/home_delete.html'
+    model = models.Home
+    success_url = reverse_lazy('core:home_list')
 
 
 def attestation_view(request):
