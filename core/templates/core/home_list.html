@@ -18,6 +18,7 @@
         <th scope="col">Подробнее</th>
         <th scope="col">Обновление</th>
         <th scope="col">Удаление</th>
+        <th scope="col">Обновление через форму</th>
     </tr>
     </thead>
     <tbody>
@@ -32,12 +33,16 @@
             <td><a href="{% url 'core:home_update' home.pk %}" role="button">Обновление</a></td>
             <td><a href="{% url 'core:home_delete' home.pk %}" role="button">Удаление</a></td>
 
+            <td><a href="{% url 'core:home_update_form' home.pk %}" role="button">Обновление через форму</a></td>
+
         </tr>
         </tbody>
     {% empty %}
         <h3>Список пуст</h3>
     {% endfor %}
 </table>
+
+<a href="{% url 'core:home_create_form' %}" role="button">Создание Home через форму</a>
 
 </body>
 </html>

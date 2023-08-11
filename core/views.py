@@ -3,7 +3,7 @@ from django.views.generic import DetailView, ListView, CreateView, UpdateView, D
 from django.http import HttpResponse, QueryDict
 
 from core import models
-
+from core import forms
 
 class DetailHome(DetailView):
     model = models.Home
@@ -91,3 +91,31 @@ def attestation_view(request):
         <p>headers: {headers}</p>
         <p>items: {items}</p>
     """)
+
+
+class HomeCreateForm(CreateView):
+    template_name = 'core/home_create_form.html'
+    form_class = forms.HomeForm
+    title = 'Создание Home через ModelForm'
+
+    def get_title(self):
+        return self.title
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["title"] = self.get_title()
+        return context
+
+class HomeUpdateForm(UpdateView):
+    model = models.Home
+    template_name = 'core/home_update_form.html'
+    form_class = forms.HomeForm
+    title = 'Обновление Home через ModelForm'
+
+    def get_title(self):
+        return self.title
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["title"] = self.get_title()
+        return context

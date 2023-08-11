@@ -12,4 +12,7 @@ urlpatterns = [
     path('home/<int:pk>/update', views.HomeUpdate.as_view(), name='home_update'),
     path('home/<int:pk>/delete', views.HomeDelete.as_view(), name='home_delete'),
     path('home/create', views.HomeCreate.as_view(), name='home_create'),
+
+    path('home_form/create', views.HomeCreateForm.as_view(), name='home_create_form'),
+    path('home_form/<int:pk>/update', views.HomeUpdateForm.as_view(), name='home_update_form'),
 ]
